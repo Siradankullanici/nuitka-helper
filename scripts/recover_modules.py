@@ -59,14 +59,14 @@ def find_custom_modules():
             module_name = ida_bytes.get_strlit_contents(module_name_ea, -1, ida_nalt.STRTYPE_C)
             if module_name:
                 module_name = module_name.decode()
-                if module_name != ".bytecode":  # ignore .bytecode module
-                    func_ea = ida_funcs.get_func(xref.frm).start_ea
-                    if module_name != "__main__":  # don't rename main module
-                        new_name = utils.set_filtered_name(func_ea, module_name, prefix="modulecode")
-                        # strip the "modulecode_" prefix
-                        module_key = new_name[len("modulecode_"):]
-                        utils.set_type(func_ea, "modulecode")
-                        module_data[module_key] = (mod_consts_rva, module_name_rva)
+                # if module_name != ".bytecode":  # Don't ignore .bytecode module https://github.com/Siradankullanici/nuitka-helper/issues/1
+                func_ea = ida_funcs.get_func(xref.frm).start_ea
+                if module_name != "__main__":  # don't rename main module
+                    new_name = utils.set_filtered_name(func_ea, module_name, prefix="modulecode")
+                    # strip the "modulecode_" prefix
+                    module_key = new_name[len("modulecode_"):]
+                    utils.set_type(func_ea, "modulecode")
+                    module_data[module_key] = (mod_consts_rva, module_name_rva)
     return module_data
 
 
